@@ -18,50 +18,52 @@ If these permissions are not granted from the device settings, the app will cras
 | Channels | Mono |
 | Packet size in seconds | 0.5 |
 | Packet size in bytes | 88400 |
+
 More can be found in the `Globals` class.
 I believe Sample and Frame are synonyms.
 
 ## Implementation notes
 ### Audio processing
-An instance of AudioRecord is created, with an internal buffer of size `bufferSize`. When this
-buffer is half full, the read() function is called, which copies the buffered audio data into an
+An instance of `AudioRecord` is created, with an internal buffer of size `Globals.bufferSize`. The
+`read()` function is continuously called, and it blocks until there are at least
+`Globals.packetSizeInBytes` bytes in the buffer. It then copies the buffered audio data into an
 array of bytes. The array of bytes is then compressed and sent over the network.
 
-Audio data is processed in "packets" or half a second's worth of samples. Because of this, there is
+Audio data is processed in *packets* or half a second's worth of samples. Because of this, there is
 a delay of at least half a second between the input on one device and the output on the other.
 
 ### Networking and connections
-Each client has a server thread and a client thread. Server thread listens for connections, client
-thread tries to connect to another process's server thread. Once a connection is made communication
-is symmetrical, as each device starts an InCommThread and an OutCommThread.
+Each device has a `ServerThread` and a `ClientThread`. `ServerThread` listens for connections,
+`ClientThread` tries to connect to another process's `ServerThread`. Once a connection is made,
+communication is symmetrical, as each device starts an `InCommThread` and an `OutCommThread`.
 
 The port used is 25565.
 
 ### Streaming audio over a network
-The audio data is read from the AudioRecord as an array of bytes. It is then compressed, and the
+The audio data is read from the `AudioRecord` as an array of bytes. It is then compressed, and the
 compressed size in bytes is written to the network stream. The compressed data, also an array of
 bytes, is then written to the stream.
 
 The other device reads an integer from the stream, and expects a packet of that number of bytes. It
 then reads the packet, uncompresses it to its original size (`Globals.packetSizeInBytes`), and
-writes the resulting array of bytes to the AudioTrack's buffer.
+writes the resulting array of bytes to the `AudioTrack`'s buffer.
 
 ### Finding device IP address
-IpFinderThread makes a request to [a web server](https://myip.dnsomatic.com/) that responds with the IP address the request came
+`IpFinderThread` makes a request to [a web server](https://myip.dnsomatic.com/) that responds with the IP address the request came
 from.
 
 ### BetterSocket
-Wraps the Socket and its I/O streams, and provides reading and writing methods.
+Wraps the `Socket` and its I/O streams, and provides reading and writing methods.
 This class exists for two reasons:
 * The input and output streams are both used in two separate places in the code. However, once they
-are opened once and then closed (at the end of the scope they are opened in), they cannot be
+are opened and then closed (at the end of the scope they are opened in), they cannot be
 reopened. Therefore, it is necessary to store the Input and Output streams and reuse them.
-* Stream wrapper classes such as Scanner and OutputStreamWriter do not provide support for both
+* Stream wrapper classes such as `Scanner` and `OutputStreamWriter` do not provide support for both
 arrays of bytes and integers.
 
 ### Error handling and recovery
 If errors happen during the call (connection reset, other person hung up, microphone could not be
-accessed etc) the call is ended and the status box informs the user of the reason.
+accessed, etc.) the call is ended and the status box informs the user of the reason.
 
 ### Bugs / issues
 * Error handling is not very robust and my testing was not extensive, so it is likely that crashing
@@ -75,7 +77,7 @@ the app is not difficult.
 this is a public IP address, and connections only work when using local IP address.
 * Connecting devices via Wifi is not very reliable. Even when using the public IP, all the tests I
 made over wifi either threw an "Address Unreacheable" error or timed out. I was only able to
-successfully make a connection in two cases:
+successfully make a connection using the local address in two cases:
     * two physical phones with one of them connected to the others' mobile hotspot
     * two emulators running on the same device
 * The `hang up` button may or may not work, possibly because the communication threads fail to stop
@@ -99,8 +101,8 @@ but not limited to:
     * https://stackoverflow.com/questions/2383265/convert-4-bytes-to-int#2383729
     * https://stackoverflow.com/questions/6374915/java-convert-int-to-byte-array-of-4-bytes#6374970
     * https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents/7984845#7984845
-* UnicornRecorder, the app I submitted in the last application cycle (used as example for
-ConnectRequest ListView)
+* [UnicornRecorder](https://github.com/mirunaish/audio-recorder-app), the app I submitted in the
+last application cycle (used as example for ConnectRequest ListView)
 * CS10 (multithreading, networking)
 * CS50 (error handling, documentation, style)
 * Dali Lab help sessions: Deflater/Inflater debugging; networking over Wifi timeout; AudioRecord
