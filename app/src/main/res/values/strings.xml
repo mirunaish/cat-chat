@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">CatChat</string>
+    <string name="info_outbound">enter a user\'s IP address to connect</string>
+    <string name="info_ip">or give your ip address to a friend so they can connect.</string>
+    <string name="info_inbound">inbound connection requests will appear here</string>
+    <string name="connect_button">Connect</string>
+    <string name="accept_button">Accept</string>
+    <string name="decline_button">Decline</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="ip_address_loading">finding your ip address...</string>
+    <string name="hang_up">hang up</string>
+</resources>
