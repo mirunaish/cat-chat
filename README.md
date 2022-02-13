@@ -66,20 +66,18 @@ If errors happen during the call (connection reset, other person hung up, microp
 accessed, etc.) the call is ended and the status box informs the user of the reason.
 
 ### Bugs / issues
-* Error handling is not very robust and my testing was not extensive, so it is likely that crashing
-the app is not difficult.
-* Declining a call causes the app to crash on the calling device
 * After a call is ended, a new call fails to connect.
 * Behavior if a connection is made while the server device is in a call is undefined. The server
 thread cannot be stopped due to a port conflict on restarting
+* IP server does not always correctly return the IP address
 * Connecting to the IP address displayed on the screen always causes a timeout error. I believe
 this is a public IP address, and connections only work when using local IP address.
-* Connecting devices via Wifi is not very reliable. Even when using the public IP, all the tests I
-made over wifi either threw an "Address Unreacheable" error or timed out. I was only able to
-successfully make a connection using the local address in two cases:
+* Connecting devices via Wifi is not very reliable. Regardless of which IP was used, all the tests I
+made over Wifi either threw an "Address unreachable" error or timed out. I was only able to
+successfully make a connection using the local IP address in two cases:
     * two physical phones with one of them connected to the others' mobile hotspot
     * two emulators running on the same device
-* Console warns about an unfreed resource
+* Console warns about an unfreed resource but I'm not sure which resource that is
 * ConnectActivity layout breaks when the keyboard is opened
 
 ## Resources / dependencies
@@ -107,10 +105,10 @@ buffering; IP address fetching
 * Suggestions made by my IDE (Android Studio)
 
 ## Future features, in order of priority
-* Common call features such as speaker and mute
 * If a slow connection causes a delay in the input stream, and there is a delay between one user's
 recorded audio and the other user's played audio, the audio still stored in the buffer is sped up
 until it catches up. The minimum delay is `Globals.packetSizeInSeconds`.
+* Common call features such as speaker, mute, and displaying call duration
 * An account system and DNS-like server, to return the current IP address of an user with a given
 username.
 * Handling connection attempts while in a call or the app is closed

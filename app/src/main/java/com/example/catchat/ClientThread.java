@@ -40,6 +40,7 @@ public class ClientThread extends Thread {
             Globals.sock = new BetterSocket(sock);
         } catch (IOException e) {
             activity.connectionFailed("Connection failed.");
+            return;
         }
 
         activity.updateStatus("Ringing...");
@@ -69,7 +70,7 @@ public class ClientThread extends Thread {
 
         try {
             message = Globals.sock.readInt();
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             return false;
         }
 
