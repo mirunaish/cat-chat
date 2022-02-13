@@ -68,10 +68,10 @@ accessed, etc.) the call is ended and the status box informs the user of the rea
 ### Bugs / issues
 * Error handling is not very robust and my testing was not extensive, so it is likely that crashing
 the app is not difficult.
-    * After a call is ended, a new call fails to connect.
-    * When the connection ends on one device it may not end on the other
-    * Behavior if a connection is made while the server device is in a call is undefined. The server
-    thread cannot be stopped due to a port conflict on restarting
+* Declining a call causes the app to crash on the calling device
+* After a call is ended, a new call fails to connect.
+* Behavior if a connection is made while the server device is in a call is undefined. The server
+thread cannot be stopped due to a port conflict on restarting
 * Connecting to the IP address displayed on the screen always causes a timeout error. I believe
 this is a public IP address, and connections only work when using local IP address.
 * Connecting devices via Wifi is not very reliable. Even when using the public IP, all the tests I
@@ -102,7 +102,7 @@ but not limited to:
 last application cycle (used as example for ConnectRequest ListView)
 * CS10 (multithreading, networking)
 * CS50 (error handling, documentation, style)
-* Dali Lab help sessions: Deflater/Inflater debugging; networking over Wifi timeout; AudioRecord
+* DALI help sessions: Deflater/Inflater debugging; networking over Wifi timeout; AudioRecord
 buffering; IP address fetching
 * Suggestions made by my IDE (Android Studio)
 

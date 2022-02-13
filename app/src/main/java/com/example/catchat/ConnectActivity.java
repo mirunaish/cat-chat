@@ -94,12 +94,14 @@ public class ConnectActivity extends AppCompatActivity {
      * Starts a ClientThread; turns the connect button into a cancel button
      */
     private void attemptConnection() {
-        connectButton.setText(R.string.cancel_button);
-        connectButton.setOnClickListener(v -> connectionFailed("Cancelled."));
-        updateStatus("Connecting...");
+        if (!ipInput.getText().toString().equals("")) {
+            connectButton.setText(R.string.cancel_button);
+            connectButton.setOnClickListener(v -> connectionFailed("Cancelled."));
+            updateStatus("Connecting...");
 
-        clientThread = new ClientThread(this, ipInput.getText().toString());
-        clientThread.start();
+            clientThread = new ClientThread(this, ipInput.getText().toString());
+            clientThread.start();
+        }  // if ip input is empty, do nothing
     }
 
     /**
