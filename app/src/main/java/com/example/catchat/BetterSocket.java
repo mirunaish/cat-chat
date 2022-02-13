@@ -104,9 +104,14 @@ public class BetterSocket {
      * @throws IOException if closing failed
      */
     public void destroy() throws IOException {
-        in.close();
-        out.close();
-        sock.close();
+        int errors = 0;
+
+        // try to close each one; even if one fails; try to close the others
+        try { in.close(); } catch (IOException e) { errors++; }
+        try { out.close(); } catch (IOException e) { errors++; }
+        try { sock.close(); } catch (IOException e) { errors++; }
+
+        if (errors > 0) throw new IOException("Failed to close " + errors + " resources");
     }
 
     /**
