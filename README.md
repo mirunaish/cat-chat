@@ -82,8 +82,6 @@ playing on the other.
 
 * After a call is ended, a new call fails to connect.
 * ConnectActivity layout breaks when the keyboard is opened
-* cancelling call on the caller end does not remove call request. accepting call updates status to
-"disconnected"
 
 ## Resources / dependencies
 * https://myip.dnsomatic.com/ for getting device IP address
