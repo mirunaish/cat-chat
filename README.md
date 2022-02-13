@@ -66,7 +66,6 @@ If errors happen during the call (connection reset, other person hung up, microp
 accessed, etc.) the call is ended and the status box informs the user of the reason.
 
 ### Bugs / issues
-* After a call is ended, a new call fails to connect.
 * Behavior if a connection is made while the server device is in a call is undefined. The server
 thread cannot be stopped due to a port conflict on restarting
 * IP server does not always correctly return the IP address. Three attempts are made to increase the
@@ -78,8 +77,13 @@ made over Wifi either threw an "Address unreachable" error or timed out. I was o
 successfully make a connection using the local IP address in two cases:
     * two physical phones with one of them connected to the others' mobile hotspot
     * two emulators running on the same device
-* Console warns about an unfreed resource but I'm not sure which resource that is
+* Factors such as internet speed can cause significant delays between recording on one device and
+playing on the other.
+
+* After a call is ended, a new call fails to connect.
 * ConnectActivity layout breaks when the keyboard is opened
+* cancelling call on the caller end does not remove call request. accepting call updates status to
+"disconnected"
 
 ## Resources / dependencies
 * https://myip.dnsomatic.com/ for getting device IP address

@@ -38,6 +38,7 @@ public class IpFinderThread extends Thread {
                 URL url = new URL(address);
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
                 ip = in.readLine();
+                in.close();
             } catch (IOException e) {
                 attemptNumber--;
                 // try again
