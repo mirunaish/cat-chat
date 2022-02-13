@@ -48,22 +48,16 @@ public class ClientThread extends Thread {
         // wait for other side to accept call
         if (awaitResponse()) {
             activity.startCall();
-        } else {
-            try {
-                Globals.sock.destroy();
-                Globals.sock = null;
-            } catch (IOException e) {
-                // socket already destroyed; do nothing
-            }
+        } else if (!this.isInterrupted()) {
             activity.connectionFailed("Declined.");
-        }
+        } // else, thread was interrupted (call cancelled), do nothing
     }
 
     /**
      * After the socket is established, waits for the partner to send a message.
      * The partner sends the connection message in ConnectRequestsAdapter::accept().
      * @return true if connection made
-     *         false if declined
+     *         false if declined / cancelled
      */
     private boolean awaitResponse() {
         int message;

@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -111,6 +112,14 @@ public class ConnectActivity extends AppCompatActivity {
      */
     public void connectionFailed(String reason) {
         if (clientThread != null && !clientThread.isInterrupted()) clientThread.interrupt();
+        if (Globals.sock != null) {
+            try {
+                Globals.sock.destroy();
+            } catch (IOException e) {
+                // could not destroy socket; do nothing
+            }
+            Globals.sock = null;
+        }
 
         // https://stackoverflow.com/questions/16466521/modify-view-from-a-different-thread
         runOnUiThread(() -> {
