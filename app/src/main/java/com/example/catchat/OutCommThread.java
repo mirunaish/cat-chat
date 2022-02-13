@@ -139,10 +139,14 @@ public class OutCommThread extends Thread {
      * @throws IOException if writing to stream failed
      */
     private void send(byte[] data) throws IOException {
-        // write the length in bytes of the packet
-        Globals.sock.writeInt(data.length);
+        try {
+            // write the length in bytes of the packet
+            Globals.sock.writeInt(data.length);
 
-        // write the data to the stream's buffer, from 0 to its length (all the data)
-        Globals.sock.writeBytes(data);
+            // write the data to the stream's buffer, from 0 to its length (all the data)
+            Globals.sock.writeBytes(data);
+        } catch (NullPointerException e) {
+            // someone else called activity.endCall(); do nothing
+        }
     }
 }

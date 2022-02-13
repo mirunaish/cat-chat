@@ -110,8 +110,6 @@
         android:layout_width="337dp"
         android:layout_height="52dp"
         android:textAlignment="center"
-        android:flow_horizontalAlign="center"
-        android:flow_verticalAlign="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"

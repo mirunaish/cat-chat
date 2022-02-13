@@ -3,7 +3,7 @@
 
 ### Instructions
 * Make sure the app is running and on the connection screen on the receiving device before
-attempting to make a connection from the other device.
+attempting to make a connection from the other device.  
 
 ### Permissions
 If these permissions are not granted from the device settings, the app will crash.
@@ -70,7 +70,6 @@ accessed, etc.) the call is ended and the status box informs the user of the rea
 the app is not difficult.
     * After a call is ended, a new call fails to connect.
     * When the connection ends on one device it may not end on the other
-    * Closing a call may cause the app to crash
     * Behavior if a connection is made while the server device is in a call is undefined. The server
     thread cannot be stopped due to a port conflict on restarting
 * Connecting to the IP address displayed on the screen always causes a timeout error. I believe
@@ -80,8 +79,6 @@ made over wifi either threw an "Address Unreacheable" error or timed out. I was 
 successfully make a connection using the local address in two cases:
     * two physical phones with one of them connected to the others' mobile hotspot
     * two emulators running on the same device
-* The `hang up` button may or may not work, possibly because the communication threads fail to stop
-after the call ends
 * Console warns about an unfreed resource
 * ConnectActivity layout breaks when the keyboard is opened
 

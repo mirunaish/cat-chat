@@ -96,12 +96,11 @@ public class InCommThread extends Thread {
         int length;
         try {
             length = Globals.sock.readInt();
+            return Globals.sock.readBytes(length);
         } catch (NullPointerException e) {
-            activity.endCall("connection closed.");
+            // someone else called activity.endCall(); do nothing
             return null;
         }
-
-        return Globals.sock.readBytes(length);
     }
 
     /**

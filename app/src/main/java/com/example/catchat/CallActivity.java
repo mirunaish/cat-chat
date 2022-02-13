@@ -51,7 +51,7 @@ public class CallActivity extends AppCompatActivity {
             Globals.sock.destroy();
             Globals.sock = null;
         } catch (IOException | NullPointerException e) {
-            System.out.println("endCall: socket is already destroyed");
+            System.out.println("socket is already destroyed");
         }
 
         // restart connect activity
