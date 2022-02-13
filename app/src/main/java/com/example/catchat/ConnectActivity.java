@@ -54,7 +54,7 @@ public class ConnectActivity extends AppCompatActivity {
 
         // setup request list
         requestWrapper = new ConnectRequestsWrapper();
-        requestWrapper.createAdapter(getApplicationContext(), this);  // create the adapter inside the wrapper
+        requestWrapper.createAdapter(getApplicationContext(), this);
         ListView listView = findViewById(R.id.connection_list);
         listView.setAdapter(requestWrapper.getAdapter());
 
@@ -131,13 +131,32 @@ public class ConnectActivity extends AppCompatActivity {
 
     /**
      * Adds an incoming connection request to the ListView.
+     * Also starts the thread that checks whether the socket has been closed.
      * Called by server thread when a socket is created.
      * Always runs on main UI thread.
      * @param sock the socket connection to the requester
      */
     public void addIncoming(Socket sock) {
         // https://stackoverflow.com/questions/16466521/modify-view-from-a-different-thread
-        runOnUiThread(() -> requestWrapper.addRequest(sock));
+        runOnUiThread(() -> {
+            try {
+                CheckConnectionAliveThread thread = new CheckConnectionAliveThread(this);
+                requestWrapper.addRequest(sock).setThread(thread);
+
+            } catch (IOException e) {
+                // could not add request. do nothing
+            }
+        });
+    }
+
+    /**
+     * Remove a cancelled incoming connection request from the ListView.
+     * Called by CheckConnectionsAliveThread.
+     * Always runs on main UI thread.
+     * @param request the request to remove
+     */
+    public void removeIncoming(ConnectRequest request) {
+        runOnUiThread(() -> requestWrapper.removeRequest(request));
     }
 
     /**
@@ -145,11 +164,31 @@ public class ConnectActivity extends AppCompatActivity {
      * Globals.sock must be set to a valid socket at the time of calling.
      */
     public void startCall() {
-        // remove all incoming connection requests
-        runOnUiThread(() -> requestWrapper.removeAll());
 
-        // start the call activity
-        Intent intent = new Intent(this, CallActivity.class);
-        startActivity(intent);
+        // let the other user know their call was accepted
+        // if this is the server device, let the other device know i clicked accept
+        // if this is the client device, unblock and end the other device's checkConnectionAliveThread
+        // networking is not allowed on the main thread, must run on another thread
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    Globals.sock.writeInt(Globals.acceptCall);
+                } catch (IOException e) {
+                    connectionFailed("Could not connect.");
+                }
+            }
+        }.start();
+
+        runOnUiThread(() -> {
+            // remove all incoming connection requests
+            requestWrapper.removeAll();
+
+            // start the call activity
+            Intent intent = new Intent(this, CallActivity.class);
+            startActivity(intent);
+        });
+
+
     }
 }

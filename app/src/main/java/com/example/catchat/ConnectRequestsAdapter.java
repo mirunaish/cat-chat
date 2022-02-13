@@ -63,26 +63,9 @@ public class ConnectRequestsAdapter extends ArrayAdapter<ConnectRequest> impleme
      * @param request the connection request to be accepted
      */
     private void accept(ConnectRequest request) {
-        try {
-            Globals.sock = new BetterSocket(request.getSocket());
-        } catch (IOException e) {
-            activity.connectionFailed("Could not connect.");
-            return;
-        }
+        Globals.sock = request.getSocket();
 
-        // let the other user know their call was accepted
-        // networking is not allowed on the main thread, must run on another thread
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Globals.sock.writeInt(Globals.acceptCall);
-                    activity.startCall();
-                } catch (IOException e) {
-                    activity.connectionFailed("Could not connect.");
-                }
-            }
-        }.start();
+        activity.startCall();
     }
 
     /**

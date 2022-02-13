@@ -2,6 +2,7 @@ package com.example.catchat;
 
 import android.content.Context;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ public class ConnectRequestsWrapper {
 
     /**
      * Creates a new ConnectRequestWrapper.
-     * Initializes the requests aray to an empty array.
+     * Initializes the requests array to an empty array.
      */
     public ConnectRequestsWrapper() {
         requests = new ArrayList<>();
@@ -39,9 +40,24 @@ public class ConnectRequestsWrapper {
     /**
      * Adds a new request to the list.
      * @param sock the request socket
+     * @return the created ConnectRequest
      */
-    public void addRequest(Socket sock) {
-        requests.add(new ConnectRequest(sock));
+    public ConnectRequest addRequest(Socket sock) throws IOException {
+        ConnectRequest request = new ConnectRequest(sock);
+        requests.add(request);
+        adapter.notifyDataSetChanged();
+
+        return request;
+    }
+
+    /**
+     * Closes a connection request and removes it from the ListView.
+     */
+    public void removeRequest(ConnectRequest request) {
+        request.close();
+
+        // remove it from the list
+        requests.remove(request);
         adapter.notifyDataSetChanged();
     }
 
@@ -52,7 +68,7 @@ public class ConnectRequestsWrapper {
     public void removeAll() {
         // close all sockets except the global one
         for (ConnectRequest request: requests) {
-            if (request.getSocket() != Globals.sock.getSocket()) request.close();
+            if (request.getSocket() != Globals.sock ) request.close();
         }
 
         // clear array
