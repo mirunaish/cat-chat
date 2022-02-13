@@ -69,7 +69,8 @@ accessed, etc.) the call is ended and the status box informs the user of the rea
 * After a call is ended, a new call fails to connect.
 * Behavior if a connection is made while the server device is in a call is undefined. The server
 thread cannot be stopped due to a port conflict on restarting
-* IP server does not always correctly return the IP address
+* IP server does not always correctly return the IP address. Three attempts are made to increase the
+likelihood of success, but it might still occasionally fail
 * Connecting to the IP address displayed on the screen always causes a timeout error. I believe
 this is a public IP address, and connections only work when using local IP address.
 * Connecting devices via Wifi is not very reliable. Regardless of which IP was used, all the tests I

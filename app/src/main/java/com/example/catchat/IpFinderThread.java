@@ -29,20 +29,22 @@ public class IpFinderThread extends Thread {
      */
     @Override
     public void run() {
+        int attemptNumber = 3;  // how many times to attempt getting IP address
 
-        // make request to a server that returns my ip address
-        String ip;
-        try {
-            URL url = new URL(address);
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            ip = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            activity.setIp("Could not get IP");
-            return;
+        String ip = null;
+        while (attemptNumber > 0 && ip == null) {
+            // make request to a server that returns my ip address
+            try {
+                URL url = new URL(address);
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+                ip = in.readLine();
+            } catch (IOException e) {
+                attemptNumber--;
+                // try again
+            }
         }
 
         // tell activity to set the ipContainer text to this ip
-        activity.setIp(ip);
+        activity.setIp(ip == null ? "Could not get IP" : ip);
     }
 }
