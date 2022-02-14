@@ -10,7 +10,6 @@ import android.media.AudioRecord;
 public class Globals {
     // https://stackoverflow.com/a/7984845
     public static BetterSocket sock = null;
-    public static ServerThread serverThread = null;
 
     public static final AudioAttributes audioAttributes = new AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_MEDIA)

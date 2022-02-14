@@ -22,7 +22,7 @@ import java.net.Socket;
 public class ConnectActivity extends AppCompatActivity {
 
     private ClientThread clientThread = null;
-    // the server thread is in the Globals class
+    private ServerThread serverThread = null;
 
     private EditText ipInput = null;  // the text box for partner ip input
     private Button connectButton = null;
@@ -58,12 +58,9 @@ public class ConnectActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.connection_list);
         listView.setAdapter(requestWrapper.getAdapter());
 
-        // if the server thread does not exist, create and start it
-        if (Globals.serverThread == null) {
-            Globals.serverThread = new ServerThread(this);
-            Globals.serverThread.setDaemon(true);
-            Globals.serverThread.start();
-        }
+        // start a server thread to listen for connections
+        serverThread = new ServerThread(this);
+        serverThread.start();
 
         connectButton.setOnClickListener(v -> attemptConnection());
 
@@ -164,6 +161,7 @@ public class ConnectActivity extends AppCompatActivity {
      * Globals.sock must be set to a valid socket at the time of calling.
      */
     public void startCall() {
+        serverThread.interrupt();
 
         // let the other user know their call was accepted
         // if this is the server device, let the other device know i clicked accept

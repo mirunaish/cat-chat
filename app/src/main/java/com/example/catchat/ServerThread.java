@@ -9,6 +9,7 @@ import java.net.Socket;
  */
 public class ServerThread extends Thread {
     private ConnectActivity activity;  // created by
+    private ServerSocket listener = null;
 
     /**
      * Creates a new server thread.
@@ -23,23 +24,51 @@ public class ServerThread extends Thread {
      */
     @Override
     public void run() {
-        ServerSocket listener;
 
         try {
-            // try to accept a new connection
+            // create the listener that accepts requests
             listener = new ServerSocket(Globals.port);
-
-            // listen forever
-            while (true) {
-                Socket heard;
-
-                // listen for connections until one is accepted
-                if ((heard = listener.accept()) != null) {
-                    activity.addIncoming(heard);
-                }
-            }
         } catch (IOException e) {
             e.printStackTrace();
+            activity.updateStatus("Cannot receive connection requests");
+            return;
+        }
+
+        // listen until interrupted
+        while (!this.isInterrupted()) {
+            Socket heard;
+
+            // listen for connections
+            try {
+                heard = listener.accept();
+            } catch (IOException e) {
+                break;
+            }
+
+            if (heard != null) {
+                activity.addIncoming(heard);
+            }
+        }
+
+        // interrupt() should close the listener, but close it here again just in case
+        try {
+            // close the listener
+            listener.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Interrupts the thread, closes the ServerSocket to unblock accept() operation
+     */
+    @Override
+    public void interrupt() {
+        super.interrupt();
+        try {
+            listener.close();
+        } catch (IOException e) {
+            // do nothing
         }
     }
 }
