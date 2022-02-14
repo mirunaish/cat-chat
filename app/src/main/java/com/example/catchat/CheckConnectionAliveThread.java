@@ -46,7 +46,5 @@ public class CheckConnectionAliveThread extends Thread {
                 this.activity.removeIncoming(request);
             // else, do nothing
         }
-        System.out.println("thread ended, no longer listening for input");
-        request.getSocket().printStatus();
     }
 }

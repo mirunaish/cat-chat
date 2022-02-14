@@ -126,6 +126,7 @@ public class InCommThread extends Thread {
         } catch (IOException e) {
             // do nothing
         }
+        decompresser.end();
 
         return stream.toByteArray();
     }

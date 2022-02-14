@@ -74,12 +74,12 @@ likelihood of success, but it might still occasionally fail
 this is a public IP address, and connections only work when using local IP address.
 * Connecting devices via Wifi is not very reliable. Regardless of which IP was used, all the tests I
 made over Wifi either threw an "Address unreachable" error or timed out. I was only able to
-successfully make a connection using the local IP address in two cases:
-    * two physical phones with one of them connected to the others' mobile hotspot
-    * two emulators running on the same device
+successfully make a connection using the local IP address between two physical phones with one of
+them connected to the others' mobile hotspot.
 * Factors such as internet speed can cause significant delays between recording on one device and
 playing on the other.
 
+* console warns about a critical lock held for a long time in OutCommThread, but only on one device
 * After a call is ended, a new call fails to connect.
 * ConnectActivity layout breaks when the keyboard is opened
 

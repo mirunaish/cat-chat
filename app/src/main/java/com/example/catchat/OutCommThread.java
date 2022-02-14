@@ -124,11 +124,13 @@ public class OutCommThread extends Thread {
             int count = compresser.deflate(buffer);
             stream.write(buffer, 0, count);
         }
+
         try {
             stream.close();
         } catch (IOException e) {
             // do nothing
         }
+        compresser.end();
 
         return stream.toByteArray();
     }
