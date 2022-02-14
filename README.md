@@ -93,12 +93,13 @@ playing on the other.
     * https://developer.android.com/reference/android/media/AudioTrack.html
     * https://docs.oracle.com/javase/6/docs/api/java/util/zip/Deflater.html
     * https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html
-* StackOverflow threads on very specific topics / errors, including
-but not limited to:
+* StackOverflow threads on very specific topics / errors, including but not limited to:
     * https://stackoverflow.com/questions/16466521/modify-view-from-a-different-thread
     * https://stackoverflow.com/questions/2383265/convert-4-bytes-to-int#2383729
     * https://stackoverflow.com/questions/6374915/java-convert-int-to-byte-array-of-4-bytes#6374970
     * https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents/7984845#7984845
+    * https://stackoverflow.com/questions/2983835/how-can-i-interrupt-a-serversocket-accept-method
+    * https://community.oracle.com/tech/developers/discussion/1520309/socket-close-on-both-sides
     * many threads on connection issues: timed out errors and host unreachable errors.
 * [UnicornRecorder](https://github.com/mirunaish/audio-recorder-app), the app I submitted in the
 last application cycle (used as example for ConnectRequest ListView)
