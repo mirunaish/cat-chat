@@ -88,6 +88,8 @@ public class ConnectRequestsAdapter extends ArrayAdapter<ConnectRequest> impleme
         RequestViewHolder views = new RequestViewHolder();
 
         if (convertView == null) {  // this connectionRequest is new
+            // https://stackoverflow.com/questions/9469174/set-theme-for-a-fragment
+            getContext().getTheme().applyStyle(R.style.Theme_CatChat, true);
             LayoutInflater inflater = LayoutInflater.from(this.context);  // get a layoutInflater to inflate the view
             convertView = inflater.inflate(R.layout.connect_request, parent, false);  // inflate view
 

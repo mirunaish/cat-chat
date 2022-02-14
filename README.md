@@ -81,8 +81,6 @@ to the others' mobile hotspot.
 * Factors such as internet speed can cause significant delays between recording on one device and
 playing on the other.
 
-* ConnectActivity layout breaks when the keyboard is opened
-
 ## Resources / dependencies
 * https://myip.dnsomatic.com/ for getting device IP address
 
@@ -102,6 +100,7 @@ playing on the other.
     * https://community.oracle.com/tech/developers/discussion/1520309/socket-close-on-both-sides
     * https://stackoverflow.com/questions/42840555/how-to-avoid-keyboard-pushing-layout-up-on-android-react-native#43951807
     * https://stackoverflow.com/questions/28629635/android-appcompat-theme-always-shows-black-color-actionbar/28629843#28629843
+    * https://stackoverflow.com/questions/9469174/set-theme-for-a-fragment
     * many threads on connection issues: timed out errors and host unreachable errors.
 * [UnicornRecorder](https://github.com/mirunaish/audio-recorder-app), the app I submitted in the
 last application cycle (used as example for ConnectRequest ListView)
