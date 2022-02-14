@@ -2,8 +2,15 @@
 ## A P2P voice call app
 
 ### Instructions
+* Open the source files in an Android Studio project to attach a debugger to the app process and see
+console messages
+* Alternatively, download the included .apk file and install it on two devices
+* Grant the application its required permissions before running it on both devices.
 * Make sure the app is running and on the connection screen on the receiving device before
-attempting to make a connection from the other device.  
+attempting to make a connection from the other device.
+* Find the device's local IP address in its Wifi settings. (The IP address displayed in the app is a
+public address, which cannot be used to connect, likely because of firewall / network configuration
+issues).
 
 ### Permissions
 If these permissions are not granted from the device settings, the app will crash.
@@ -20,16 +27,23 @@ If these permissions are not granted from the device settings, the app will cras
 | Packet size in bytes | 88400 |
 
 More can be found in the `Globals` class.
-I believe Sample and Frame are synonyms.
+I believe "Sample" and "Frame" are synonyms.
 
 ## Implementation notes
-### Audio processing
-An instance of `AudioRecord` is created, with an internal buffer of size `Globals.bufferSize`. The
-`read()` function is continuously called, and it blocks until there are at least
-`Globals.packetSizeInBytes` bytes in the buffer. It then copies the buffered audio data into an
-array of bytes. The array of bytes is then compressed and sent over the network.
+### Streaming audio over a network
+`AudioRecord` records to an internal buffer. The `read()` function is continuously called, which
+blocks until there are at least `Globals.packetSizeInBytes` bytes in the buffer, at which point it
+reads this data as an array of bytes. The array of bytes is then compressed, and its length written
+to the output stream, followed by the data itself.
 
-Audio data is processed in *packets* or half a second's worth of samples. Because of this, there is
+The other device reads the integer from the stream, followed by that number of bytes, forming a full
+compressed packet. It then uncompresses it to its original size (`Globals.packetSizeInBytes`) and
+adds it to the `AudioTrack`'s buffer. When this buffer is sufficiently full, audio starts playing.
+If the buffer becomes full and the newly received data would cause a buffer overflow, the `write()`
+function blocks until enough audio plays to make space in the buffer. This can cause significant
+delays in the audio. The buffer can become full due to a slow connection.
+
+Audio data is processed in *packets* of half a second's worth of samples. Because of this, there is
 a delay of at least half a second between the input on one device and the output on the other.
 
 ### Networking and connections
@@ -39,48 +53,34 @@ communication is symmetrical, as each device starts an `InCommThread` and an `Ou
 
 The port used is 25565.
 
-### Streaming audio over a network
-The audio data is read from the `AudioRecord` as an array of bytes. It is then compressed, and the
-compressed size in bytes is written to the network stream. The compressed data, also an array of
-bytes, is then written to the stream.
-
-The other device reads an integer from the stream, and expects a packet of that number of bytes. It
-then reads the packet, uncompresses it to its original size (`Globals.packetSizeInBytes`), and
-writes the resulting array of bytes to the `AudioTrack`'s buffer.
-
 ### Finding device IP address
-`IpFinderThread` makes a request to [a web server](https://myip.dnsomatic.com/) that responds with the IP address the request came
-from.
+`IpFinderThread` makes a request to [a web server](https://myip.dnsomatic.com/) that responds with
+the IP address the request came from.
 
 ### BetterSocket
 Wraps the `Socket` and its I/O streams, and provides reading and writing methods.
 This class exists for two reasons:
-* The input and output streams are both used in two separate places in the code. However, once they
-are opened and then closed (at the end of the scope they are opened in), they cannot be
+* The input and output streams are both used in multiple separate places in the code. However, once
+they are opened and then closed (at the end of the scope they are opened in), they cannot be
 reopened. Therefore, it is necessary to store the Input and Output streams and reuse them.
-* Stream wrapper classes such as `Scanner` and `OutputStreamWriter` do not provide support for both
-arrays of bytes and integers.
+* Other stream wrapper classes such as `Scanner` and `OutputStreamWriter` do not provide support for
+both arrays of bytes and integers.
 
 ### Error handling and recovery
-If errors happen during the call (connection reset, other person hung up, microphone could not be
-accessed, etc.) the call is ended and the status box informs the user of the reason.
+If errors happen during the call (connection lost, other person hung up, microphone could not be
+accessed, etc.) the call is ended and the reason written to the status box.
 
 ### Bugs / issues
-* Behavior if a connection is made while the server device is in a call is undefined. The server
-thread cannot be stopped due to a port conflict on restarting
-* IP server does not always correctly return the IP address. Three attempts are made to increase the
-likelihood of success, but it might still occasionally fail
-* Connecting to the IP address displayed on the screen always causes a timeout error. I believe
-this is a public IP address, and connections only work when using local IP address.
-* Connecting devices via Wifi is not very reliable. Regardless of which IP was used, all the tests I
-made over Wifi either threw an "Address unreachable" error or timed out. I was only able to
-successfully make a connection using the local IP address between two physical phones with one of
-them connected to the others' mobile hotspot.
+* The IP server does not always correctly return the IP address. Three attempts are made to increase
+the likelihood of success, but it still occasionally fails.
+* The public IP address displayed on the screen cannot be used to connect. Additionally, devices
+cannot be connected over Wifi, regardless of which IP address is used. These connection attempts
+either throw an "Address unreachable" error or time out. I was only able to successfully make a
+connection using the local IP address between two (non-emulator) devices with one of them connected
+to the others' mobile hotspot.
 * Factors such as internet speed can cause significant delays between recording on one device and
 playing on the other.
 
-* console warns about a critical lock held for a long time in OutCommThread, but only on one device
-* After a call is ended, a new call fails to connect.
 * ConnectActivity layout breaks when the keyboard is opened
 
 ## Resources / dependencies
@@ -93,12 +93,13 @@ playing on the other.
     * https://developer.android.com/reference/android/media/AudioTrack.html
     * https://docs.oracle.com/javase/6/docs/api/java/util/zip/Deflater.html
     * https://docs.oracle.com/javase/7/docs/api/java/nio/ByteBuffer.html
-* StackOverflow threads on very specific topics / errors (especially connection problems), including
+* StackOverflow threads on very specific topics / errors, including
 but not limited to:
     * https://stackoverflow.com/questions/16466521/modify-view-from-a-different-thread
     * https://stackoverflow.com/questions/2383265/convert-4-bytes-to-int#2383729
     * https://stackoverflow.com/questions/6374915/java-convert-int-to-byte-array-of-4-bytes#6374970
     * https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents/7984845#7984845
+    * many threads on connection issues: timed out errors and host unreachable errors.
 * [UnicornRecorder](https://github.com/mirunaish/audio-recorder-app), the app I submitted in the
 last application cycle (used as example for ConnectRequest ListView)
 * CS10 (multithreading, networking)
