@@ -100,6 +100,8 @@ playing on the other.
     * https://stackoverflow.com/questions/2139134/how-to-send-an-object-from-one-android-activity-to-another-using-intents/7984845#7984845
     * https://stackoverflow.com/questions/2983835/how-can-i-interrupt-a-serversocket-accept-method
     * https://community.oracle.com/tech/developers/discussion/1520309/socket-close-on-both-sides
+    * https://stackoverflow.com/questions/42840555/how-to-avoid-keyboard-pushing-layout-up-on-android-react-native#43951807
+    * https://stackoverflow.com/questions/28629635/android-appcompat-theme-always-shows-black-color-actionbar/28629843#28629843
     * many threads on connection issues: timed out errors and host unreachable errors.
 * [UnicornRecorder](https://github.com/mirunaish/audio-recorder-app), the app I submitted in the
 last application cycle (used as example for ConnectRequest ListView)
